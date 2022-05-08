@@ -524,7 +524,7 @@
 }
 .mod-service {
 	height: 79px;
-	border-bottom: 1px solid #ccc;
+/*	border-bottom: 1px solid #ccc; */
 }
 .mod-service li {
 	float: left;
