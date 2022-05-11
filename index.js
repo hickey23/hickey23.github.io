@@ -45,7 +45,7 @@ window.addEventListener('load', function () {
             // 点击小圆圈移动ul
             console.log(imgwidth);
             // 移动的是ul
-            animate(image, -liindex * (imgwidth + 10));
+            animate(image, -liindex * (imgwidth + 12));
 
         })
     }
@@ -70,7 +70,7 @@ window.addEventListener('load', function () {
 
         }
         n++;//不能用n+1
-        animate(image, -n * (imgwidth + 10));
+        animate(image, -n * (imgwidth + 12));
         ///////////////////////////////圆圈跟图片动
         c++;//同n
         if (c == ol.children.length) {
@@ -91,7 +91,7 @@ window.addEventListener('load', function () {
 
         }
         n--;
-        animate(image, -n * (imgwidth + 10));
+        animate(image, -n * (imgwidth + 12));
         c--;
         if (c < 0) {
             c = ol.children.length - 1;//ol是小圆圈
@@ -115,7 +115,7 @@ window.addEventListener('load', function () {
 
             }
             n++;//不能用n+1
-            animate(image, -n * (imgwidth + 10));
+            animate(image, -n * (imgwidth + 12));
             ///////////////////////////////圆圈跟图片动
             c++;//同n
             if (c == ol.children.length) {
