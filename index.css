@@ -70,7 +70,7 @@
     height: 56px;
     margin-left: 30px;
     background-color: skyblue;
-    background: url(../品优购项目/img/logo.png) no-repeat;
+    background: url(../shopping/img/logo.png) no-repeat;
     background-size: 175px 56px;
 }
 .input{
@@ -200,8 +200,8 @@
     color: darkorange;
 }
 
+/* 图片 */
 .img_div{
-    /* float: left; */
     position: absolute;
     top: 46px;
     left: 200px;
@@ -209,21 +209,96 @@
     width: 750px;
     height: 480px;
     background-color: aquamarine;
-    background: url(./img/focus.jpg) no-repeat;
-    background-size:813px 480px ;
+    /* background: url(./img/focus.jpg) no-repeat; */
+    /* background-size:813px 480px ; */
     box-shadow: 0 0 3px 1px rgba(51, 51, 51, 0.5);
     transition: 0.3s;
+    overflow: hidden;
+}
+.img_div ul{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 600%;
     
 }
-.img_div:hover{
-    margin-bottom: 5px;
-    box-shadow: 0 3px 15px 3px rgba(51, 51, 51, 0.5);
+.img_div ul li{
+    float: left;
+    text-decoration: none;
+    /* 去掉li前面的小点 */
+    list-style: none;
+    
+}
+/* img当父亲，ul当孩子 */
+/* 子绝父相 */
+.img_div ul li a img{
+    position: relative;
+    width: 100%;
+    height: 480px;
 }
 
-.fastnews{
-    /* float: right; */
+
+
+
+/* ///////////////////////////////////////// */
+/* 前进键和后退键 */
+.arrow_pre{
+    display: none;
     position: absolute;
-    left: 950px;
+    top: 50%;
+    width: 35px;
+    height: 35px;
+    background-color: rgba(0, 0, 0, .3);
+    /* background: url(./img/arrow-prev.png) no-repeat; */
+
+}
+.arrow_pre a img{
+    width: 50%;
+    height: 17.5px;
+    margin-top: 9px;
+    margin-left: 9px;
+}
+.arrow_next{
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 95.8%;
+    width: 35px;
+    height: 35px;
+    background-color: rgba(0, 0, 0, .3);
+}
+.arrow_next a img{
+    width: 50%;
+    height: 17.5px;
+    margin-top: 9px;
+    margin-left: 9px;
+}
+/* ////////////////////////////////////////// */
+/* 小圆圈 */
+.circle{
+    position: absolute;
+    left: 50px;
+    bottom: 10px;
+}
+.circle li {
+    float: left;
+    width: 8px;
+    height: 8px;
+    /* background-color: #fff; */
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    margin: 0 3px;
+    border-radius: 50%;
+    /*鼠标经过显示小手*/
+    cursor: pointer;
+    list-style: none;
+   
+}
+.current{
+    background-color: #fff;
+}
+.fastnews{
+    position: absolute;
+    left: 960px;
     top: 46px;
     /* display: inline-block; */
     width: 250px;
@@ -524,7 +599,7 @@
 }
 .mod-service {
 	height: 79px;
-/*	border-bottom: 1px solid #ccc; */
+	/* border-bottom: 1px solid #ccc; */
 }
 .mod-service li {
 	float: left;
@@ -560,6 +635,7 @@
 	font-size: 12px;
 }
 .mod-help {
+    float: left;
 	height: 187px;
 	border-bottom: 1px solid #ccc;
 }
@@ -598,6 +674,9 @@
     color: chocolate;
 }
 .copyright {
+    float: left;
+    margin-left: 15%;
+    height: 69px;
 	text-align: center;
 	color: #666;
 	font-size: 12px;
