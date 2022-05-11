@@ -12,10 +12,16 @@ window.addEventListener('load', function () {
     img.addEventListener('mouseenter', function () {
         ap.style.display = 'block';
         an.style.display = 'block';
+        clearInterval(t);
+        t=null;
     })
     img.addEventListener('mouseleave', function () {
         ap.style.display = 'none';
         an.style.display = 'none';
+        t = window.setInterval(function () {
+          // console.log(11);
+          an.click();
+        }, 2000)
     })
 
     var img_num = img.querySelector('ul')//这个也是获取ul
