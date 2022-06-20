@@ -144,7 +144,7 @@ window.addEventListener('load', function () {
         an.click();
     }, 2000)
 
-
+    this.alert('this is for 刘炅')
 
 
 })
