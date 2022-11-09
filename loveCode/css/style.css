@@ -1,0 +1,23 @@
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: #000;
+  }
+  canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  .namebox{
+    margin:auto;
+    color: white;
+    width: auto;
+    height: auto;
+    position:fixed;
+    bottom:50%;
+    right:44%;
+  }
+  .namebox h1{
+    margin: 0 auto;
+}
