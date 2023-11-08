@@ -6,6 +6,15 @@
       height: 100%;
       background-image: linear-gradient(to bottom right, red, gold);
     }
+    .headBox{
+      width: 100%;
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 5%;
+      /* background-color: aqua; */
+      color: blue;
+      text-align: center;
+    }
 
     .box {
       width: 400px;
@@ -28,5 +37,21 @@
 
       /* 盒子投影 */
       -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0%, transparent), to(rgba(250, 250, 250, .2)));
+    }
+    .flashing-text {
+      color: #333;
+      animation: flashing 3s infinite;
+    }
+    
+    @keyframes flashing {
+      0% {
+        color: #333; 
+      }
+      50% {
+        color: yellow;
+      }
+      100% {
+        color: #333;
+      }
     }
   
