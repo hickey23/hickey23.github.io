@@ -37,11 +37,18 @@
           <div class="card" v-for="(item,index) in taskDone" :key="index">
             {{item.taskName}}
             <el-button
-              @click="remove(item.id)"
+              @click="deleteData(item.id)"
               size="mini"
               style="float: right"
               type="primary"
               >删除</el-button
+            >
+            <el-button
+              @click="getBack(item)"
+              size="mini"
+              style="float: right;margin-right: 5px;"
+              type="info"
+              >还原</el-button
             >
           </div>
         </div>
@@ -79,25 +86,19 @@
 
       <!-- 考核目标 -->
       <div class="target">
-        <div><h1 style="text-align: center;">公司考核目标</h1></div>
-        <div style="text-align: center;">
+        <div><h1 style="text-align: center">公司考核目标</h1></div>
+        <div style="text-align: center">
           <el-progress type="circle" :percentage="0">目标1</el-progress>
           <el-progress type="circle" :percentage="25">目标2</el-progress>
-          <el-progress
-            type="circle"
-            :percentage="100"
-            status="success"
-          >目标3</el-progress>
-          <el-progress
-            type="circle"
-            :percentage="70"
-            status="warning"
-          >目标4</el-progress>
-          <el-progress
-            type="circle"
-            :percentage="50"
-            status="exception"
-          >目标5</el-progress>
+          <el-progress type="circle" :percentage="100" status="success"
+            >目标3</el-progress
+          >
+          <el-progress type="circle" :percentage="70" status="warning"
+            >目标4</el-progress
+          >
+          <el-progress type="circle" :percentage="50" status="exception"
+            >目标5</el-progress
+          >
         </div>
       </div>
     </div>
@@ -176,6 +177,22 @@
               }
             }
           },
+          deleteData(id) {
+            console.log("id:", id);
+            for (let i = 0; i < this.taskDone.length; i++) {
+              if (this.taskDone[i].id == id) {
+                this.taskDone.splice(i, 1);
+              }
+            }
+          },
+          getBack(item){
+            for (let i = 0; i < this.taskDone.length; i++) {
+              if (this.taskDone[i].id == item.id) {
+                this.taskDone.splice(i, 1);
+              }
+            }
+            this.taskNotDone.push(item)
+          }
         },
       });
     </script>
