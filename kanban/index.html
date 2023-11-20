@@ -9,14 +9,13 @@
     <link rel="stylesheet" type="text/css" href="./element-ui/index.css" />
     <script src="./vue/vue.js" type="text/javascript"></script>
     <script src="./element-ui/index.js" type="text/javascript"></script>
-    <script src="./func/uuid.js" type="text/javascript"></script>
   </head>
   <body>
     <div id="app">
       <div class="board">
         <div class="list" id="todo-list">
           <div class="arc">
-            <h2 style="text-align: center; line-height: 50px">待完成</h2>
+            <h3 style="text-align: center; line-height: 50px">待完成</h3>
           </div>
           <div class="card" v-for="item,index in taskNotDone" :key="index">
             {{item.taskName}}
@@ -31,25 +30,19 @@
         </div>
         <div class="list" id="done-list">
           <div class="arc" style="background-color: greenyellow">
-            <h2 style="text-align: center; line-height: 50px">已完成</h2>
+            <h3 style="text-align: center; line-height: 50px">已完成</h3>
           </div>
           <div v-if="this.taskDone.length===0"></div>
           <div class="card" v-for="(item,index) in taskDone" :key="index">
             {{item.taskName}}
-            <el-button
-              @click="deleteData(item.id)"
-              size="mini"
-              style="float: right"
-              type="primary"
-              >删除</el-button
-            >
-            <el-button
-              @click="getBack(item)"
-              size="mini"
-              style="float: right;margin-right: 5px;"
-              type="info"
-              >还原</el-button
-            >
+            <div>
+              <el-button @click="open(item)" size="mini" type="primary"
+                >删除</el-button
+              >
+              <el-button @click="getBack(item)" size="mini" type="info"
+                >还原</el-button
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -59,7 +52,7 @@
           v-model="value"
           placeholder="请选择"
           size="medium"
-          onchange="this.getSelection"
+          @change="getSelection"
         >
           <el-option
             v-for="item in options"
@@ -78,7 +71,7 @@
           ></el-input>
         </div>
         <div>
-          <el-button type="primary" @click="this.add" size="medium"
+          <el-button type="primary" @click="add" size="medium"
             >添加新的待完成任务</el-button
           >
         </div>
@@ -96,9 +89,6 @@
           <el-progress type="circle" :percentage="70" status="warning"
             >目标4</el-progress
           >
-          <el-progress type="circle" :percentage="50" status="exception"
-            >目标5</el-progress
-          >
         </div>
       </div>
     </div>
@@ -108,7 +98,6 @@
         el: "#app",
         data() {
           return {
-            addTask: [{ id: "", taskName: "", isDone: false }],
             inputData: "",
             value: "",
             options: [
@@ -123,23 +112,48 @@
             ],
             selected: "",
             taskDone: [],
-            taskNotDone: [
-              { id: "1", taskName: "吃饭", isDone: false },
-              { id: "2", taskName: "睡觉", isDone: false },
-            ],
+            taskNotDone: [],
           };
         },
-        created() {},
-        watch: {
-          // 监听 myData 数据的变化
-          taskDone(newValue, oldValue) {
-            console.log(`数据变化：${oldValue} -> ${newValue}`);
-
-            // 在这里可以执行你想要立即做出的响应
-          },
+        created() {
+          this.loadJSON("http://localhost:3000/api/taskDone");
+          this.loadJSON("http://localhost:3000/api/taskNotDone");
         },
         methods: {
+          async loadJSON(url) {
+            try {
+              const response = await fetch(url);
+              const data = await response.json();
+              console.log(data);
+              if (url == "http://localhost:3000/api/taskDone") {
+                this.taskDone = data.data;
+                console.log(this.taskDone);
+              } else if (url == "http://localhost:3000/api/taskNotDone") {
+                this.taskNotDone = data.data;
+                console.log(this.taskNotDone);
+              }
+            } catch (error) {
+              console.error("读取JSON文件出错:", error);
+            }
+          },
+          async writeJSON(url,obj) {
+            try {
+              const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(obj), // 替换为你要发送的数据
+              });
+              const data = await res.json();
+              console.log("@", data);
+            } catch (error) {
+              console.error("写入JSON文件出错:", error);
+            }
+          },
+
           add() {
+            //-----------------------------uuid-----------------------------------
             function getUUID() {
               var s = [];
               var hexDigits = "0123456789abcdef";
@@ -152,28 +166,51 @@
               var uuid = s.join("");
               return uuid;
             }
-            const uuid = getUUID();
-            this.addTask.id = uuid;
-            this.addTask.addTask = this.inputData;
-            this.isDone = false;
-            console.log(this.addTask);
+            //-----------------------------uuid-----------------------------------
+            let addTaskList = {id:"",taskName:"",isDone:false};
+            if (this.inputData.trim() === "") {
+              alert("数据不能为空，请填入数据!");
+            } else {
+              if (this.value === "1") {
+                const uuid = getUUID();
+                addTaskList.id = uuid;
+                addTaskList.taskName = this.inputData;
+                addTaskList.isDone = false;
+                this.taskNotDone.push(addTaskList);
+                this.inputData = "";
+                this.writeJSON("http://localhost:3000/api/taskNotDone/create",addTaskList);
+                // console.log(this.taskNotDone);
+              } else {
+                const uuid = getUUID();
+                addTaskList.id = uuid;
+                addTaskList.taskName = this.inputData;
+                addTaskList.isDone = false;
+                this.taskDone.push(addTaskList);
+                this.inputData = "";
+                this.writeJSON("http://localhost:3000/api/taskDone/create",addTaskList);
+                // console.log(this.taskDone);
+              }
+            }
           },
           getSelection(v) {
             if (v === "1") {
-              this.task = taskNotDone;
+              console.log(v);
+              this.value = v;
             } else if (v === "2") {
-              this.task = taskDone;
+              console.log(v);
+              this.value = v;
             }
           },
           remove(id) {
             for (let i = 0; i < this.taskNotDone.length; i++) {
               if (this.taskNotDone[i].id == id) {
                 console.log(this.taskNotDone[i]);
+                this.writeJSON("http://localhost:3000/api/taskDone/create",this.taskNotDone[i]);
                 this.taskDone.push(this.taskNotDone[i]);
                 this.taskNotDone.splice(i, 1);
                 // console.log(this.taskNotDone);
-
-                console.log("taskDone:", this.taskDone);
+                console.log("taskNotDone:", this.taskNotDone);
+          
               }
             }
           },
@@ -185,14 +222,37 @@
               }
             }
           },
-          getBack(item){
+          //删除弹窗回调函数
+          open(item) {
+            this.$confirm("此操作将永久删除该选项, 是否继续?", "提示", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning",
+            })
+              .then(() => {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!",
+                });
+                // console.log(item);
+                this.deleteData(item.id);
+              })
+              .catch(() => {
+                this.$message({
+                  type: "error",
+                  message: "已取消删除",
+                });
+                // console.log("not delete");
+              });
+          },
+          getBack(item) {
             for (let i = 0; i < this.taskDone.length; i++) {
               if (this.taskDone[i].id == item.id) {
                 this.taskDone.splice(i, 1);
               }
             }
-            this.taskNotDone.push(item)
-          }
+            this.taskNotDone.push(item);
+          },
         },
       });
     </script>
