@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>考核指标看板</title>
+    <link rel="stylesheet" href="./index.css" />
+    <link rel="stylesheet" type="text/css" href="./element-ui/index.css" />
+    <script src="./vue/vue.js" type="text/javascript"></script>
+    <script src="./element-ui/index.js" type="text/javascript"></script>
+    <script src="./func/uuid.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="board">
+        <div class="list" id="todo-list">
+          <div class="arc">
+            <h2 style="text-align: center; line-height: 50px">待完成</h2>
+          </div>
+          <div class="card" v-for="item,index in taskNotDone" :key="index">
+            {{item.taskName}}
+            <el-button
+              @click="remove(item.id)"
+              size="mini"
+              style="float: right"
+              type="danger"
+              >已完成</el-button
+            >
+          </div>
+        </div>
+        <div class="list" id="done-list">
+          <div class="arc" style="background-color: greenyellow">
+            <h2 style="text-align: center; line-height: 50px">已完成</h2>
+          </div>
+          <div v-if="this.taskDone.length===0"></div>
+          <div class="card" v-for="(item,index) in taskDone" :key="index">
+            {{item.taskName}}
+            <el-button
+              @click="remove(item.id)"
+              size="mini"
+              style="float: right"
+              type="primary"
+              >删除</el-button
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="inputDiv">
+        <el-select
+          v-model="value"
+          placeholder="请选择"
+          size="medium"
+          onchange="this.getSelection"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+
+        <div class="input">
+          <el-input
+            v-model="inputData"
+            placeholder="请输入内容"
+            size="medium"
+          ></el-input>
+        </div>
+        <div>
+          <el-button type="primary" @click="this.add" size="medium"
+            >添加新的待完成任务</el-button
+          >
+        </div>
+      </div>
+
+      <!-- 考核目标 -->
+      <div class="target">
+        <div><h1 style="text-align: center;">公司考核目标</h1></div>
+        <div style="text-align: center;">
+          <el-progress type="circle" :percentage="0">目标1</el-progress>
+          <el-progress type="circle" :percentage="25">目标2</el-progress>
+          <el-progress
+            type="circle"
+            :percentage="100"
+            status="success"
+          >目标3</el-progress>
+          <el-progress
+            type="circle"
+            :percentage="70"
+            status="warning"
+          >目标4</el-progress>
+          <el-progress
+            type="circle"
+            :percentage="50"
+            status="exception"
+          >目标5</el-progress>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            addTask: [{ id: "", taskName: "", isDone: false }],
+            inputData: "",
+            value: "",
+            options: [
+              {
+                value: "1",
+                label: "未完成",
+              },
+              {
+                value: "2",
+                label: "已完成",
+              },
+            ],
+            selected: "",
+            taskDone: [],
+            taskNotDone: [
+              { id: "1", taskName: "吃饭", isDone: false },
+              { id: "2", taskName: "睡觉", isDone: false },
+            ],
+          };
+        },
+        created() {},
+        watch: {
+          // 监听 myData 数据的变化
+          taskDone(newValue, oldValue) {
+            console.log(`数据变化：${oldValue} -> ${newValue}`);
+
+            // 在这里可以执行你想要立即做出的响应
+          },
+        },
+        methods: {
+          add() {
+            function getUUID() {
+              var s = [];
+              var hexDigits = "0123456789abcdef";
+              for (var i = 0; i < 36; i++) {
+                s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+              }
+              s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+              s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+              s[8] = s[13] = s[18] = s[23] = "-";
+              var uuid = s.join("");
+              return uuid;
+            }
+            const uuid = getUUID();
+            this.addTask.id = uuid;
+            this.addTask.addTask = this.inputData;
+            this.isDone = false;
+            console.log(this.addTask);
+          },
+          getSelection(v) {
+            if (v === "1") {
+              this.task = taskNotDone;
+            } else if (v === "2") {
+              this.task = taskDone;
+            }
+          },
+          remove(id) {
+            for (let i = 0; i < this.taskNotDone.length; i++) {
+              if (this.taskNotDone[i].id == id) {
+                console.log(this.taskNotDone[i]);
+                this.taskDone.push(this.taskNotDone[i]);
+                this.taskNotDone.splice(i, 1);
+                // console.log(this.taskNotDone);
+
+                console.log("taskDone:", this.taskDone);
+              }
+            }
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
