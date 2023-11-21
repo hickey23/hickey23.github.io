@@ -113,11 +113,12 @@
             selected: "",
             taskDone: [],
             taskNotDone: [],
+            url:"http://192.168.1.122:3000/"
           };
         },
         created() {
-          this.loadJSON("http://localhost:3000/api/taskDone");
-          this.loadJSON("http://localhost:3000/api/taskNotDone");
+          this.loadJSON(this.url+"api/taskDone");
+          this.loadJSON(this.url+"api/taskNotDone");
         },
         methods: {
           async loadJSON(url) {
@@ -125,10 +126,10 @@
               const response = await fetch(url);
               const data = await response.json();
               console.log(data);
-              if (url == "http://localhost:3000/api/taskDone") {
+              if (url == this.url+"api/taskDone") {
                 this.taskDone = data.data;
                 console.log(this.taskDone);
-              } else if (url == "http://localhost:3000/api/taskNotDone") {
+              } else if (url == this.url+"api/taskNotDone") {
                 this.taskNotDone = data.data;
                 console.log(this.taskNotDone);
               }
@@ -178,7 +179,7 @@
                 addTaskList.isDone = false;
                 this.taskNotDone.push(addTaskList);
                 this.inputData = "";
-                this.writeJSON("http://localhost:3000/api/taskNotDone/create",addTaskList);
+                this.writeJSON(this.url+"api/taskNotDone/create",addTaskList);
                 // console.log(this.taskNotDone);
               } else {
                 const uuid = getUUID();
@@ -187,7 +188,7 @@
                 addTaskList.isDone = false;
                 this.taskDone.push(addTaskList);
                 this.inputData = "";
-                this.writeJSON("http://localhost:3000/api/taskDone/create",addTaskList);
+                this.writeJSON(this.url+"api/taskDone/create",addTaskList);
                 // console.log(this.taskDone);
               }
             }
@@ -205,7 +206,7 @@
             for (let i = 0; i < this.taskNotDone.length; i++) {
               if (this.taskNotDone[i].id == id) {
                 console.log(this.taskNotDone[i]);
-                this.writeJSON("http://localhost:3000/api/taskDone/create",this.taskNotDone[i]);
+                this.writeJSON(this.url+"api/taskDone/create",this.taskNotDone[i]);
                 this.taskDone.push(this.taskNotDone[i]);
                 this.taskNotDone.splice(i, 1);
                 // console.log(this.taskNotDone);
