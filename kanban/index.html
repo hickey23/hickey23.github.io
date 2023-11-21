@@ -15,7 +15,7 @@
       <div class="board">
         <div class="list" id="todo-list">
           <div class="arc">
-            <h3 style="text-align: center; line-height: 50px">待完成</h3>
+            <h3 style="text-align: center; line-height: 30px">待完成</h3>
           </div>
           <div class="card" v-for="item,index in taskNotDone" :key="index">
             {{item.taskName}}
@@ -30,7 +30,7 @@
         </div>
         <div class="list" id="done-list">
           <div class="arc" style="background-color: greenyellow">
-            <h3 style="text-align: center; line-height: 50px">已完成</h3>
+            <h3 style="text-align: center; line-height: 30px">已完成</h3>
           </div>
           <div v-if="this.taskDone.length===0"></div>
           <div class="card" v-for="(item,index) in taskDone" :key="index">
@@ -113,12 +113,12 @@
             selected: "",
             taskDone: [],
             taskNotDone: [],
-            url:"http://192.168.1.122:3000/"
+            url: "http://192.168.1.122:3000/",
           };
         },
         created() {
-          this.loadJSON(this.url+"api/taskDone");
-          this.loadJSON(this.url+"api/taskNotDone");
+          this.loadJSON(this.url + "api/taskDone");
+          this.loadJSON(this.url + "api/taskNotDone");
         },
         methods: {
           async loadJSON(url) {
@@ -126,10 +126,10 @@
               const response = await fetch(url);
               const data = await response.json();
               console.log(data);
-              if (url == this.url+"api/taskDone") {
+              if (url == this.url + "api/taskDone") {
                 this.taskDone = data.data;
                 console.log(this.taskDone);
-              } else if (url == this.url+"api/taskNotDone") {
+              } else if (url == this.url + "api/taskNotDone") {
                 this.taskNotDone = data.data;
                 console.log(this.taskNotDone);
               }
@@ -137,7 +137,7 @@
               console.error("读取JSON文件出错:", error);
             }
           },
-          async writeJSON(url,obj) {
+          async writeJSON(url, obj) {
             try {
               const res = await fetch(url, {
                 method: "POST",
@@ -151,6 +151,10 @@
             } catch (error) {
               console.error("写入JSON文件出错:", error);
             }
+          },
+          async deleteJSON(url) {
+            try {
+            } catch {}
           },
 
           add() {
@@ -168,7 +172,7 @@
               return uuid;
             }
             //-----------------------------uuid-----------------------------------
-            let addTaskList = {id:"",taskName:"",isDone:false};
+            let addTaskList = { id: "", taskName: "", isDone: false };
             if (this.inputData.trim() === "") {
               alert("数据不能为空，请填入数据!");
             } else {
@@ -179,7 +183,10 @@
                 addTaskList.isDone = false;
                 this.taskNotDone.push(addTaskList);
                 this.inputData = "";
-                this.writeJSON(this.url+"api/taskNotDone/create",addTaskList);
+                this.writeJSON(
+                  this.url + "api/taskNotDone/create",
+                  addTaskList
+                );
                 // console.log(this.taskNotDone);
               } else {
                 const uuid = getUUID();
@@ -188,7 +195,7 @@
                 addTaskList.isDone = false;
                 this.taskDone.push(addTaskList);
                 this.inputData = "";
-                this.writeJSON(this.url+"api/taskDone/create",addTaskList);
+                this.writeJSON(this.url + "api/taskDone/create", addTaskList);
                 // console.log(this.taskDone);
               }
             }
@@ -206,12 +213,14 @@
             for (let i = 0; i < this.taskNotDone.length; i++) {
               if (this.taskNotDone[i].id == id) {
                 console.log(this.taskNotDone[i]);
-                this.writeJSON(this.url+"api/taskDone/create",this.taskNotDone[i]);
+                this.writeJSON(
+                  this.url + "api/taskDone/create",
+                  this.taskNotDone[i]
+                );
                 this.taskDone.push(this.taskNotDone[i]);
                 this.taskNotDone.splice(i, 1);
                 // console.log(this.taskNotDone);
                 console.log("taskNotDone:", this.taskNotDone);
-          
               }
             }
           },

@@ -6,8 +6,8 @@ body{
   justify-content: space-around;
 }
 .arc {
-  width: 100px;
-  height: 50px;
+  width: 80px;
+  height: 30px;
   background-color: rgb(255, 0, 115);
   border-radius: 50% / 100%;
 }
