@@ -10,61 +10,6 @@
     <script src="./vue/vue.js" type="text/javascript"></script>
     <script src="./element-ui/index.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background-color: #f4f4f4;
-      }
-      h1 {
-        color: #409eff;
-        text-align: center;
-        margin: 20px 0;
-      }
-      #excelFile {
-        margin-bottom: 10px;
-      }
-      table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-bottom: 20px;
-        background-color: #fff;
-        border-radius: 4px;
-        overflow: hidden;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      th,
-      td {
-        border: 1px solid #dddddd;
-        padding: 10px;
-        text-align: left;
-        transition: background-color 0.3s ease;
-      }
-      th {
-        background-color: #f2f2f2;
-        color: #333;
-      }
-      td {
-        background-color: #fff;
-        color: #666;
-      }
-      tr:nth-child(even) td {
-        background-color: #f9f9f9;
-      }
-      tr:hover td {
-        background-color: #f5f5f5;
-      }
-      input[type="file"] {
-        padding: 10px;
-        background-color: #fff;
-        border: none;
-        border-radius: 4px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      input[type="file"]:focus {
-        outline: none;
-      }
-    </style>
   </head>
   <body>
     <h1>Excel看板数据展示</h1>
@@ -72,16 +17,30 @@
     <table id="excelData"></table>
 
     <script>
+      window.onload = () => {
+        let files = JSON.parse(localStorage.getItem("excelData"));
+        console.log(files);
+
+ 
+      };
       document
         .getElementById("excelFile")
         .addEventListener("change", function (e) {
           var files = e.target.files;
+          console.log("files:", files, files[0]);
+
           if (files.length == 0) return;
 
           var fileReader = new FileReader();
           fileReader.onload = function (e) {
             var data = new Uint8Array(e.target.result);
             var workbook = XLSX.read(data, { type: "array" });
+            // 将 Excel 数据存储到 Local Storage
+            const jsonData = XLSX.utils.sheet_to_json(
+              workbook.Sheets[workbook.SheetNames[0]]
+            );
+            localStorage.setItem("excelData", JSON.stringify(jsonData));
+            console.log("workbook:", workbook);
             var sheetName = workbook.SheetNames[0];
             var sheet = workbook.Sheets[sheetName];
             var html = XLSX.utils.sheet_to_html(sheet);
