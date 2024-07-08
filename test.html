@@ -1,78 +1,101 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>展示 Excel 数据</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+  <head>
+    <title>登录页面</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        #excelFile {
-            margin-bottom: 10px;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 20px;
-            background-color: #fff;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        th, td {
-            border: 1px solid #dddddd;
-            padding: 10px;
-            text-align: left;
-            transition: background-color 0.3s ease;
-        }
-        th {
-            background-color: #f2f2f2;
-            color: #333;
-        }
-        td {
-            background-color: #fff;
-            color: #666;
-        }
-        tr:nth-child(even) td {
-            background-color: #f9f9f9;
-        }
-        tr:hover td {
-            background-color: #f5f5f5;
-        }
-        input[type=file] {
-            padding: 10px;
-            background-color: #fff;
-            border: none;
-            border-radius: 4px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        input[type=file]:focus {
-            outline: none;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+      }
+
+      .container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 100px;
+      }
+
+      h2 {
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .form-group input[type="submit"] {
+        background-color: #4caf50;
+        color: #fff;
+        cursor: pointer;
+      }
     </style>
-</head>
-<body>
-    <input type="file" id="excelFile" />
-    <table id="excelData"></table>
+  </head>
+  <body>
+    <div class="container">
+      <h2>登录页面</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">用户名:</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">密码:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <div class="form-group">
+          <input type="submit" value="登录" />
+        </div>
+      </form>
+    </div>
 
     <script>
-        document.getElementById('excelFile').addEventListener('change', function(e) {
-            var files = e.target.files;
-            if (files.length == 0) return;
-            
-            var fileReader = new FileReader();
-            fileReader.onload = function(e) {
-                var data = new Uint8Array(e.target.result);
-                var workbook = XLSX.read(data, {type: 'array'});
-                var sheetName = workbook.SheetNames[0];
-                var sheet = workbook.Sheets[sheetName];
-                var html = XLSX.utils.sheet_to_html(sheet);
-                document.getElementById('excelData').innerHTML = html;
-            };
-            fileReader.readAsArrayBuffer(files[0]);
+      var tmp = new Date();
+      function fn() {
+        console.log(tmp1);
+        var tmp1 = 1;
+      }
+      fn(); // undefined
+      const arr = [1, 2, 3];
+      arr.map((i) => {
+        console.log(i);
+      });
+      console.log("i:",i);
+      for (var i = 1; i <= 5; i++) {
+        setTimeout(function timer() {
+          console.log(i);
+        }, i * 1000);
+      }
+      console.log("i::",i);
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // 阻止表单默认提交行为
+          var username = document.getElementById("username").value;
+          var password = document.getElementById("password").value;
+          // 在这里可以添加验证逻辑，例如检查用户名和密码是否为空等。如果验证通过，则执行登录操作。否则，显示错误消息。这里仅作示例，没有实际验证逻辑。
+          if (username && password) {
+            // 执行登录操作，例如发送请求到后端服务器验证用户信息等。这里仅作示例，没有实际登录操作。
+            alert("登录成功！"); // 显示成功消息框，可以根据需要自定义消息内容。
+          } else {
+            alert("用户名或密码不能为空！"); // 显示错误消息框，提示用户输入正确的用户名和密码。可以根据需要自定义消息内容。
+          }
         });
     </script>
-</body>
+  </body>
 </html>
