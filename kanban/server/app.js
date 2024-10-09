@@ -1,11 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
-const path = require("path");
 const cors = require("cors");
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(cors());
 // 使用中间件解析 JSON 请求体
@@ -32,7 +31,6 @@ app.get("/api/taskDone", (req, res) => {
       throw err;
     }
     const todos = JSON.parse(data.toString());
-    console.log("读取出来的todos是:", todos);
     res.send({
       code: "1",
       msg: "获取数据成功",
@@ -62,7 +60,6 @@ app.get("/api/taskNotDone", (req, res) => {
       throw err;
     }
     const todos = JSON.parse(data.toString());
-    console.log("读取出来的todos是:", todos);
     res.send({
       code: "1",
       msg: "获取数据成功",
@@ -82,8 +79,6 @@ app.post("/api/taskNotDone/create", (req, res) => {
     console.log("读取文件出错误:", error);
     throw error;
   }
-
-  console.log("@@@dataList:", dataList);
 
   //在写文件
   fs.writeFile("public/taskNotDone.json", JSON.stringify(dataList), (err) => {
@@ -115,7 +110,6 @@ app.post("/api/taskDone/create", (req, res) => {
     throw error;
   }
 
-  console.log("@@@dataList:", dataList);
 
   //在写文件
   fs.writeFile("public/taskDone.json", JSON.stringify(dataList), (err) => {

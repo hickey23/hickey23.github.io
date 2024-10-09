@@ -9,262 +9,73 @@
     <link rel="stylesheet" type="text/css" href="./element-ui/index.css" />
     <script src="./vue/vue.js" type="text/javascript"></script>
     <script src="./element-ui/index.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+      }
+      #excelFile {
+        margin-bottom: 10px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+        background-color: #fff;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      th,
+      td {
+        border: 1px solid #dddddd;
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+        color: #333;
+      }
+      td {
+        background-color: #fff;
+        color: #666;
+      }
+      input[type="file"] {
+        padding: 10px;
+        background-color: #fff;
+        border: none;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      input[type="file"]:focus {
+        outline: none;
+      }
+    </style>
   </head>
   <body>
-    <div id="app">
-      <div class="board">
-        <div class="list" id="todo-list">
-          <div class="arc">
-            <h3 style="text-align: center; line-height: 30px">待完成</h3>
-          </div>
-          <div class="card" v-for="item,index in taskNotDone" :key="index">
-            {{item.taskName}}
-            <el-button
-              @click="remove(item.id)"
-              size="mini"
-              style="float: right"
-              type="danger"
-              >已完成</el-button
-            >
-          </div>
-        </div>
-        <div class="list" id="done-list">
-          <div class="arc" style="background-color: greenyellow">
-            <h3 style="text-align: center; line-height: 30px">已完成</h3>
-          </div>
-          <div v-if="this.taskDone.length===0"></div>
-          <div class="card" v-for="(item,index) in taskDone" :key="index">
-            {{item.taskName}}
-            <div>
-              <el-button @click="open(item)" size="mini" type="primary"
-                >删除</el-button
-              >
-              <el-button @click="getBack(item)" size="mini" type="info"
-                >还原</el-button
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="inputDiv">
-        <el-select
-          v-model="value"
-          placeholder="请选择"
-          size="medium"
-          @change="getSelection"
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
-
-        <div class="input">
-          <el-input
-            v-model="inputData"
-            placeholder="请输入内容"
-            size="medium"
-          ></el-input>
-        </div>
-        <div>
-          <el-button type="primary" @click="add" size="medium"
-            >添加新的待完成任务</el-button
-          >
-        </div>
-      </div>
-
-      <!-- 考核目标 -->
-      <div class="target">
-        <div><h1 style="text-align: center">公司考核目标</h1></div>
-        <div style="text-align: center">
-          <el-progress type="circle" :percentage="0">目标1</el-progress>
-          <el-progress type="circle" :percentage="25">目标2</el-progress>
-          <el-progress type="circle" :percentage="100" status="success"
-            >目标3</el-progress
-          >
-          <el-progress type="circle" :percentage="70" status="warning"
-            >目标4</el-progress
-          >
-        </div>
-      </div>
-    </div>
+    <input type="file" id="excelFile" />
+    <table id="excelData"></table>
 
     <script>
-      new Vue({
-        el: "#app",
-        data() {
-          return {
-            inputData: "",
-            value: "",
-            options: [
-              {
-                value: "1",
-                label: "未完成",
-              },
-              {
-                value: "2",
-                label: "已完成",
-              },
-            ],
-            selected: "",
-            taskDone: [],
-            taskNotDone: [],
-            url: "http://192.168.1.122:3000/",
-          };
-        },
-        created() {
-          this.loadJSON(this.url + "api/taskDone");
-          this.loadJSON(this.url + "api/taskNotDone");
-        },
-        methods: {
-          async loadJSON(url) {
-            try {
-              const response = await fetch(url);
-              const data = await response.json();
-              console.log(data);
-              if (url == this.url + "api/taskDone") {
-                this.taskDone = data.data;
-                console.log(this.taskDone);
-              } else if (url == this.url + "api/taskNotDone") {
-                this.taskNotDone = data.data;
-                console.log(this.taskNotDone);
-              }
-            } catch (error) {
-              console.error("读取JSON文件出错:", error);
-            }
-          },
-          async writeJSON(url, obj) {
-            try {
-              const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(obj), // 替换为你要发送的数据
-              });
-              const data = await res.json();
-              console.log("@", data);
-            } catch (error) {
-              console.error("写入JSON文件出错:", error);
-            }
-          },
-          async deleteJSON(url) {
-            try {
-            } catch {}
-          },
+      document
+        .getElementById("excelFile")
+        .addEventListener("change", function (e) {
+          var files = e.target.files;
+          if (files.length == 0) return;
 
-          add() {
-            //-----------------------------uuid-----------------------------------
-            function getUUID() {
-              var s = [];
-              var hexDigits = "0123456789abcdef";
-              for (var i = 0; i < 36; i++) {
-                s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-              }
-              s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
-              s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-              s[8] = s[13] = s[18] = s[23] = "-";
-              var uuid = s.join("");
-              return uuid;
-            }
-            //-----------------------------uuid-----------------------------------
-            let addTaskList = { id: "", taskName: "", isDone: false };
-            if (this.inputData.trim() === "") {
-              alert("数据不能为空，请填入数据!");
-            } else {
-              if (this.value === "1") {
-                const uuid = getUUID();
-                addTaskList.id = uuid;
-                addTaskList.taskName = this.inputData;
-                addTaskList.isDone = false;
-                this.taskNotDone.push(addTaskList);
-                this.inputData = "";
-                this.writeJSON(
-                  this.url + "api/taskNotDone/create",
-                  addTaskList
-                );
-                // console.log(this.taskNotDone);
-              } else {
-                const uuid = getUUID();
-                addTaskList.id = uuid;
-                addTaskList.taskName = this.inputData;
-                addTaskList.isDone = false;
-                this.taskDone.push(addTaskList);
-                this.inputData = "";
-                this.writeJSON(this.url + "api/taskDone/create", addTaskList);
-                // console.log(this.taskDone);
-              }
-            }
-          },
-          getSelection(v) {
-            if (v === "1") {
-              console.log(v);
-              this.value = v;
-            } else if (v === "2") {
-              console.log(v);
-              this.value = v;
-            }
-          },
-          remove(id) {
-            for (let i = 0; i < this.taskNotDone.length; i++) {
-              if (this.taskNotDone[i].id == id) {
-                console.log(this.taskNotDone[i]);
-                this.writeJSON(
-                  this.url + "api/taskDone/create",
-                  this.taskNotDone[i]
-                );
-                this.taskDone.push(this.taskNotDone[i]);
-                this.taskNotDone.splice(i, 1);
-                // console.log(this.taskNotDone);
-                console.log("taskNotDone:", this.taskNotDone);
-              }
-            }
-          },
-          deleteData(id) {
-            console.log("id:", id);
-            for (let i = 0; i < this.taskDone.length; i++) {
-              if (this.taskDone[i].id == id) {
-                this.taskDone.splice(i, 1);
-              }
-            }
-          },
-          //删除弹窗回调函数
-          open(item) {
-            this.$confirm("此操作将永久删除该选项, 是否继续?", "提示", {
-              confirmButtonText: "确定",
-              cancelButtonText: "取消",
-              type: "warning",
-            })
-              .then(() => {
-                this.$message({
-                  type: "success",
-                  message: "删除成功!",
-                });
-                // console.log(item);
-                this.deleteData(item.id);
-              })
-              .catch(() => {
-                this.$message({
-                  type: "error",
-                  message: "已取消删除",
-                });
-                // console.log("not delete");
-              });
-          },
-          getBack(item) {
-            for (let i = 0; i < this.taskDone.length; i++) {
-              if (this.taskDone[i].id == item.id) {
-                this.taskDone.splice(i, 1);
-              }
-            }
-            this.taskNotDone.push(item);
-          },
-        },
-      });
+          var fileReader = new FileReader();
+          fileReader.onload = function (e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, { type: "array" });
+            var sheetName = workbook.SheetNames[0];
+            var sheet = workbook.Sheets[sheetName];
+            var html = XLSX.utils.sheet_to_html(sheet);
+            document.getElementById("excelData").innerHTML = html;
+          };
+          fileReader.readAsArrayBuffer(files[0]);
+        });
     </script>
   </body>
 </html>

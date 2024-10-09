@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* 设置背景渐变 */
+      body {
+        background: linear-gradient(
+          135deg,
+          #6e8efb,
+          #a777e3
+        ); /* 从蓝色到紫色的渐变 */
+        margin: 0; /* 移除默认的边距 */
+        height: 100vh; /* 设置高度为视口高度 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      /* 定义关键帧动画 */
+      @keyframes colorChange {
+        0% {
+          color: red;
+          transform: scale(1) rotate(0deg);
+        }
+        25% {
+          color: orange;
+          transform: scale(1.2) rotate(15deg);
+        }
+        50% {
+          color: green;
+          transform: scale(1) rotate(0deg);
+        }
+        75% {
+          color: blue;
+          transform: scale(0.8) rotate(-15deg);
+        }
+        100% {
+          color: red;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      /* 应用动画到元素 */
+      .key {
+        animation-name: colorChange; /* 引用关键帧动画 */
+        animation-duration: 5s; /* 动画持续时间 */
+        animation-iteration-count: infinite; /* 动画无限循环 */
+        font-size: 100px; /* 设置字体大小 */
+        font-family: Arial, sans-serif; /* 设置字体 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* 视口高度 */
+      }
+      /* 居中容器 */
+      .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* 视口高度 */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="center-container">
+      <h1 class="key">通通闪开</h1>
+    </div>
+  </body>
+</html>
